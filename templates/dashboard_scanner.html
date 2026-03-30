@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <!-- Scanner Control Panel -->
+    <div class="col-md-8">
+        <div class="cyber-card">
+            <h3 class="card-title"><i class="fas fa-radar"></i> Real-time Path Scanner</h3>
+            <p class="text-muted">Enter a file path or directory to scan for Ransomware artifacts.</p>
+
+            <div class="input-group mb-3">
+                <input type="text" id="scanPathInput" class="form-control" placeholder="C:\Path\To\Scan"
+                    style="background: rgba(0,0,0,0.3); color: white; border: 1px solid #444;">
+                <button class="btn btn-cyber" type="button" onclick="scanAndMonitor()">
+                    <i class="fas fa-radiation"></i> SCAN NOW
+                </button>
+                <button class="btn btn-danger" type="button" id="stopMonitorBtn" onclick="stopMonitoring()"
+                    style="display:none;">
+                    <i class="fas fa-stop"></i> STOP MONITORING
+                </button>
+            </div>
+
+            <!-- Monitoring Status -->
+            <div id="monitoringStatus" class="alert alert-secondary" style="display:none;">
+                <i class="fas fa-eye"></i> <strong>Monitoring:</strong> <span id="monitoringPath">-</span>
+                <span class="badge bg-info ms-2" id="filesScannedBadge">0 files scanned</span>
+            </div>
+
+            <div id="scanStatus" class="mt-3 text-info" style="display:none;">
+                <i class="fas fa-spinner fa-spin"></i> Scanning in progress...
+            </div>
+
+            <div class="mt-4">
+                <h5>Scan Results</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover" id="scanResultsTable">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>File Name</th>
+                                <th>MD5</th>
+                                <th>Model Details</th>
+                                <th>Prediction</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Results populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Threat Log Side Panel -->
+    <div class="col-md-4">
+        <div class="cyber-card">
+            <h4 class="card-title text-danger"><i class="fas fa-exclamation-triangle"></i> Threat Log</h4>
+            <div style="max-height: 400px; overflow-y: auto;">
+                {% for log in logs %}
+                <div class="log-entry">
+                    <i class="fas fa-bug text-danger"></i> {{ log }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SocketIO Client Library -->
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+{% endblock %}

@@ -1,0 +1,196 @@
+:root {
+    --primary-color: #00f2ff; /* Cyber Blue */
+    --secondary-color: #7000ff; /* Cyber Purple */
+    --bg-dark: #0a0e17; /* Deep Blue/Black */
+    --bg-panel: #111625; /* Slightly lighter panel */
+    --text-main: #e0e6ed;
+    --text-dim: #94a3b8;
+    --danger: #ff0f4f;
+    --success: #0aff99;
+    --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+    background: rgba(10, 14, 23, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 242, 255, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    color: var(--text-dim) !important;
+    transition: color 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+/* Dashboard Cards */
+.cyber-card {
+    background: var(--bg-panel);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.cyber-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 242, 255, 0.15);
+    border-color: rgba(0, 242, 255, 0.3);
+}
+
+.card-title {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn-cyber {
+    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    border: none;
+    color: #fff;
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+}
+
+.btn-cyber:hover {
+    filter: brightness(1.2);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+    transform: scale(1.02);
+}
+
+/* Chat Interface */
+.chat-container {
+    height: 60vh;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.user-msg {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.user-msg .msg-bubble {
+    background: rgba(0, 242, 255, 0.15);
+    color: var(--primary-color);
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 15px 15px 0 15px;
+    max-width: 80%;
+}
+
+.bot-msg {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.bot-msg .msg-bubble {
+    background: rgba(112, 0, 255, 0.15);
+    color: #fff;
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 15px 15px 15px 0;
+    max-width: 80%;
+}
+
+/* Logs */
+.log-entry {
+    font-family: 'Consolas', monospace;
+    font-size: 0.9em;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.log-threat { color: var(--danger); }
+.log-safe { color: var(--success); }
+
+/* Animations */
+@keyframes glow {
+    0% { box-shadow: 0 0 5px var(--primary-color); }
+    50% { box-shadow: 0 0 20px var(--primary-color); }
+    100% { box-shadow: 0 0 5px var(--primary-color); }
+}
+
+.pulse {
+    animation: glow 2s infinite;
+}
+
+/* File Upload */
+.upload-zone {
+    border: 2px dashed rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.upload-zone:hover {
+    border-color: var(--primary-color);
+    background: rgba(0, 242, 255, 0.05);
+}
+
+/* Comparison Table Styles */
+.comparison-table {
+    background: transparent;
+    border-radius: 6px;
+    width: 100%;
+    border: 1px solid rgba(255,255,255,0.03);
+    overflow: hidden;
+}
+/* Header matches the app dark panels */
+.comparison-table thead.comparison-thead th {
+    background: rgba(10,14,23,0.85) !important;
+    color: var(--text-main) !important;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding: 10px 12px;
+}
+/* Rows use a subtle dark fill (no white blocks) */
+.comparison-table tbody tr td {
+    background: rgba(255,255,255,0.01);
+    color: var(--text-main);
+    padding: 8px 12px;
+    vertical-align: middle;
+}
+.comparison-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.comparison-table .algorithm-cell {
+    font-weight: 700;
+    color: var(--text-main);
+}
+.comparison-table .accuracy-cell { color: #ffcc33; font-weight:600; }
+.comparison-table .confidence-cell { color: rgba(255,255,255,0.7); }
+.comparison-table .badge { vertical-align: middle; }
+/* Ensure bootstrap table utilities don't override colors */
+.comparison-table td, .comparison-table th { background: transparent !important; }
+
+

@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center mb-3">
+    <div class="col-md-6 d-flex align-items-center">
+        <a href="/dashboard/scanner" class="text-primary text-decoration-none me-3"><i class="fas fa-arrow-left"></i>
+            Back to Dashboard</a>
+        <a href="#" class="text-muted text-decoration-none small">About</a>
+    </div>
+    <div class="col-md-6 text-end text-white-50 small">
+        Scan ID: <span id="scanIdDisplay">e2a92628-b450-4908-828d-577145f26b4f</span>
+    </div>
+</div>
+
+<div class="cyber-card p-4" id="mainCSVContainer">
+    <div id="uploadPrompt" class="text-center py-5">
+        <h3 class="card-title mb-4"><i class="fas fa-database"></i> Batch CSV Analysis</h3>
+        <div class="upload-zone mx-auto" id="dropZone" onclick="document.getElementById('csvFileInput').click()"
+            style="max-width: 600px;">
+            <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-white-50"></i>
+            <h5>Click to Upload CSV Dataset</h5>
+            <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="uploadCSV()">
+        </div>
+    </div>
+
+    <div class="row" id="csvResultsSection" style="display:none;">
+        <!-- Left Side: Circular Progress Charts -->
+        <div
+            class="col-md-5 d-flex flex-column align-items-center justify-content-center border-end border-secondary border-opacity-25">
+            <div class="d-flex justify-content-center gap-4 mb-4">
+                <!-- Malicious Circle -->
+                <div class="text-center">
+                    <div class="circular-progress" id="maliciousCircle">
+                        <svg width="140" height="140">
+                            <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(255,255,255,0.05)"
+                                stroke-width="10" />
+                            <circle id="maliciousArc" cx="70" cy="70" r="60" fill="none" stroke="#dc3545"
+                                stroke-width="10" stroke-dasharray="377" stroke-dashoffset="377"
+                                transform="rotate(-90 70 70)" stroke-linecap="round" />
+                            <text x="70" y="65" text-anchor="middle" fill="white" font-size="24" font-weight="bold"
+                                id="maliciousPercent">0%</text>
+                            <text x="70" y="82" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9"
+                                font-weight="600">RANSOMWARE</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Benign Circle -->
+                <div class="text-center">
+                    <div class="circular-progress" id="benignCircle">
+                        <svg width="140" height="140">
+                            <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(255,255,255,0.05)"
+                                stroke-width="10" />
+                            <circle id="benignArc" cx="70" cy="70" r="60" fill="none" stroke="#28a745" stroke-width="10"
+                                stroke-dasharray="377" stroke-dashoffset="377" transform="rotate(-90 70 70)"
+                                stroke-linecap="round" />
+                            <text x="70" y="65" text-anchor="middle" fill="white" font-size="24" font-weight="bold"
+                                id="benignPercent">0%</text>
+                            <text x="70" y="82" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9"
+                                font-weight="600">BENIGN</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <h2 class="text-danger fw-bold mt-2" style="letter-spacing: 1px;">Malicious Detected</h2>
+        </div>
+
+        <!-- Right Side: File Info and Consensus -->
+        <div class="col-md-7 ps-md-5">
+            <div class="mb-4">
+                <label class="text-white-50 small fw-bold mb-1">FILE NAME</label>
+                <h4 class="text-white fw-bold" id="csvFileName">sample_ransomware_dataset (1).csv</h4>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-6">
+                    <div class="info-box-compact">
+                        <label class="text-white-50 smaller fw-bold mb-1 d-block">Detected Type</label>
+                        <span class="text-white fw-bold" id="detectedTypeDisplay">ASCII text</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="info-box-compact">
+                        <label class="text-white-50 smaller fw-bold mb-1 d-block">Max Entropy</label>
+                        <span class="text-white fw-bold" id="maxEntropy">0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="text-white-50 small fw-bold mb-2 d-block">MULTI-MODEL CONSENSUS</label>
+
+                <div class="consensus-item mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="smaller fw-bold text-primary">RANDOMFOREST</span>
+                        <span class="smaller fw-bold text-white" id="rfScore">0%</span>
+                    </div>
+                    <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                        <div id="rfBar" class="progress-bar bg-primary" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="consensus-item mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="smaller fw-bold text-primary">GRADIENTBOOSTING</span>
+                        <span class="smaller fw-bold text-white" id="gbScore">0%</span>
+                    </div>
+                    <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                        <div id="gbBar" class="progress-bar bg-primary" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-danger-custom p-3 d-flex align-items-start gap-3" id="warningMessage"
+                style="display:none !important;">
+                <i class="fas fa-exclamation-triangle mt-1"></i>
+                <span class="smaller" id="warningText">The file 'sample_ransomware_dataset (1).csv' shows strong
+                    characteristics of ransomware, including high entropy and structural anomalies common in malicious
+                    files.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Deep Analysis Breakdown -->
+<div class="cyber-card mt-4 p-4" id="deepAnalysisSection" style="display:none;">
+    <h5 class="text-white fw-bold mb-4 d-flex align-items-center gap-2">
+        <i class="fas fa-microchip text-primary"></i> Deep Analysis Breakdown
+    </h5>
+
+    <div class="row g-3">
+        <!-- Feature Cards -->
+        <div class="col-md-4">
+            <div class="feature-card-compact p-2 px-3 d-flex justify-content-between align-items-center">
+                <span class="text-white-50 smaller">file_size</span>
+                <span class="text-primary fw-bold" id="feat_file_size">411</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card-compact p-2 px-3 d-flex justify-content-between align-items-center">
+                <span class="text-white-50 smaller">entropy</span>
+                <span class="text-primary fw-bold" id="feat_entropy">5.14</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card-compact p-2 px-3 d-flex justify-content-between align-items-center">
+                <span class="text-white-50 smaller">has_pe_header</span>
+                <span class="text-primary fw-bold" id="feat_has_pe_header">0</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card-compact p-2 px-3 d-flex justify-content-between align-items-center">
+                <span class="text-white-50 smaller">suspicious_strings_count</span>
+                <span class="text-primary fw-bold" id="feat_suspicious_strings_count">1</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card-compact p-2 px-3 d-flex justify-content-between align-items-center">
+                <span class="text-white-50 smaller">byte_dist_std</span>
+                <span class="text-primary fw-bold" id="feat_byte_dist_std">5.02</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card-compact p-2 px-3 d-flex justify-content-between align-items-center">
+                <span class="text-white-50 smaller">magic_score</span>
+                <span class="text-primary fw-bold" id="feat_magic_score">0</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card-compact p-2 px-3 d-flex justify-content-between align-items-center">
+                <span class="text-white-50 smaller">section_count</span>
+                <span class="text-primary fw-bold" id="feat_section_count">0</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card-compact p-2 px-3 d-flex justify-content-between align-items-center">
+                <span class="text-white-50 smaller">is_compressed</span>
+                <span class="text-primary fw-bold" id="feat_is_compressed">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Methodology -->
+    <div class="analysis-methodology mt-4 p-4">
+        <h6 class="text-primary fw-bold mb-2">How we analyzed this:</h6>
+        <p class="text-white-50 smaller mb-0">Our ML engine extracted behavioral features from the file header and
+            analyzed
+            data randomness (entropy). Ransomware typically exhibits high entropy due to encryption routines. The score
+            reflects both structural anomalies and heuristic patterns found in the file's code sections.</p>
+    </div>
+</div>
+
+
+<style>
+    .smaller {
+        font-size: 0.85rem;
+    }
+
+    .text-muted {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .info-box-compact {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 12px 18px;
+    }
+
+    .progress-bar {
+        background-color: var(--primary-color) !important;
+        border-radius: 3px;
+    }
+
+    .alert-danger-custom {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.2);
+        color: #ff6b6b;
+        border-radius: 8px;
+    }
+
+    .feature-card-compact {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        height: 45px;
+    }
+
+    .analysis-methodology {
+        background: rgba(0, 242, 255, 0.02);
+        border: 1px solid rgba(0, 242, 255, 0.1);
+        border-radius: 12px;
+    }
+
+    .circular-progress svg {
+        transition: transform 0.3s ease;
+    }
+
+    .circular-progress:hover svg {
+        transform: scale(1.05);
+    }
+
+    #mainCSVContainer {
+        min-height: 400px;
+    }
+</style>
+{% endblock %}

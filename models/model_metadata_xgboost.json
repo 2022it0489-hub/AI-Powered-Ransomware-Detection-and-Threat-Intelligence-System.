@@ -1,0 +1,30 @@
+{
+  "model_type": "XGBoost",
+  "sklearn_version": "1.6.1",
+  "accuracy": 0.9953588861326719,
+  "precision": 0.995384047267356,
+  "recall": 0.9939159292035398,
+  "f1_score": 0.994649446494465,
+  "features": [
+    "Machine",
+    "DebugSize",
+    "DebugRVA",
+    "MajorImageVersion",
+    "MajorOSVersion",
+    "ExportRVA",
+    "ExportSize",
+    "IatVRA",
+    "MajorLinkerVersion",
+    "MinorLinkerVersion",
+    "NumberOfSections",
+    "SizeOfStackReserve",
+    "DllCharacteristics",
+    "ResourceSize",
+    "BitcoinAddresses"
+  ],
+  "n_features": 15,
+  "training_samples": 49988,
+  "testing_samples": 12497,
+  "training_date": "2026-02-02 10:48:23",
+  "random_state": 42
+}

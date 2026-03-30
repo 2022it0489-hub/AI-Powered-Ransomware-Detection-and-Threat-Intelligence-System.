@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="cyber-card">
+            <h3 class="card-title text-center mb-4"><i class="fas fa-user-secret"></i> Cyber Security Assistant</h3>
+
+            <div class="chat-container" id="chatBox">
+                <div class="bot-msg">
+                    <div class="msg-bubble">
+                        Hello! I am your AI Cybersecurity Expert. Ask me about Ransomware, Malware Analysis, or Incident
+                        Response.
+                    </div>
+                </div>
+                <!-- Chat messages go here -->
+            </div>
+
+            <div class="input-group mt-3">
+                <input type="text" id="chatInput" class="form-control" placeholder="Ask a cybersecurity question..."
+                    style="background: rgba(0,0,0,0.3); color: white; border: 1px solid #444;"
+                    onkeypress="handleEnter(event)">
+                <button class="btn btn-cyber" type="button" onclick="sendMessage()">
+                    Send <i class="fas fa-paper-plane ms-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function handleEnter(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    }
+</script>
+{% endblock %}
